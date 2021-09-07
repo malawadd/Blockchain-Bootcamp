@@ -29,20 +29,21 @@ Blockchain.blocks.push({
 
 
 
-// create block
-// figure out a way to make a block first, hash it , then added it back into block
+// /////////////create block///////////////////////
+// figure out a way to make a block first, hash it , then added it back into block [Done]
 function createBlock(data) {
-    Blockchain.blocks.push({
+    var block = {
         index: Blockchain.blocks.length ,
         prevHash: Blockchain.blocks[Blockchain.blocks.length-1]["hash"],
         data: data,
         timestamp: Date.now(),
-        hash: blockHash(data),
-    })
+    };
+
+    block.hash = blockHash(block);
+    Blockchain.blocks.push(block);
+    return block;
 
 };
-
-
 
 // for (let line of poem){
 //     Blockchain.blocks.push({
@@ -57,30 +58,74 @@ for (let line of poem){
     createBlock(line)
 }
 
-// need a re-write
-function blockHash(data) {
+// create a hash for the block
+function blockHash(block) {
 	return crypto.createHash("sha256").update(
-		String(Blockchain.blocks.length ) + 
-        String(Blockchain.blocks[Blockchain.blocks.length-1]["hash"])+
-        String(data)+
-        String(Date.now())
+		String(block.prevHash ) + 
+        String(block.index)+
+        String(block.data)+
+        String(block.timestamp)
 	).digest("hex");
 }
 
+// check the chain integrtry 
+// by verifying prevhash == to current hash 
+function verifyChain(BC){
+    for (var i = 1 ; i <BC.blocks.length; i++) {
+        if (BC.blocks[i]["prevHash"] === BC.blocks[i-1]["hash"]) {
+            return console.log("True"); 
+        }
+    }
+}
 
+
+// need a re-write
+// function blockHash(block) {
+// 	return crypto.createHash("sha256").update(
+// 		String(Blockchain.blocks.length ) + 
+//         String(Blockchain.blocks[Blockchain.blocks.length-1]["hash"])+
+//         String(data)+
+//         String(Date.now())
+// 	).digest("hex");
+// }
+
+
+function verifyBlock(block){
+    if (block.data == 0 && block.hash == "000000" ){
+        return true ; 
+    }
+    
+}
 
 var poemLine = 15 ; 
 var poemLine2 = "inside until it tears I apart"
 const  hash2 = crypto.createHash("sha256").update(String(poemLine) + poemLine2 ).digest("hex");
 
-//console.log(Blockchain.blocks[1]);
+console.log(Blockchain.blocks.length);
+//console.log(verifyChain(Blockchain));
 //console.log(Blockchain.blocks.length + 10);
 //console.log(Blockchain.blocks[Blockchain.blocks.length-1]["data"] );
 // console.log(blockHash("but the power of a smile"));
 // console.log(blockHash(poemLine));
 // console.log(hash2)
-console.log(Blockchain.blocks[1]["prevHash"] == Blockchain.blocks[0]["hash"] );
-console.log(Blockchain.blocks[0]["data"].length === 0 );
-console.log(Blockchain.blocks[0]["hash"] === "000000" );
-console.log(Blockchain.blocks[0]["index"] >= 0 );
-console.log(Blockchain.blocks[1]["hash"] === blockHash(Blockchain.blocks[1]["data"]));
+// console.log(Blockchain.blocks[1]["prevHash"] == Blockchain.blocks[0]["hash"] );
+// console.log(Blockchain.blocks[0]["data"].length === 0 );
+// console.log(Blockchain.blocks[0]["hash"] === "000000" );
+// console.log(Blockchain.blocks[0]["index"] >= 0 );
+ //console.log(Blockchain.blocks[1]["hash"]);
+ console.log(Blockchain.blocks[1]["hash"] === blockHash(Blockchain.blocks[1]));
+
+// for ( var v = 1 ; v < Blockchain.blocks.length ; v++) {
+//     if (Blockchain.blocks[v]["prevHash"] == Blockchain.blocks[v-1]["hash"]) {
+//          console.log(v); 
+//     }
+// }
+
+// for ( var v = 1 ; v <= Blockchain.blocks.length ; v++) {
+//          console.log(Blockchain.blocks[v]["prevHash"] == Blockchain.blocks[v-1]["hash"]); 
+
+// }
+
+console.log(Blockchain.blocks[7]["data"].length > 0 );
+
+
