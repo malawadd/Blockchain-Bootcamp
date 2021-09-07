@@ -31,15 +31,18 @@ Blockchain.blocks.push({
 
 // /////////////create block///////////////////////
 // figure out a way to make a block first, hash it , then added it back into block [Done]
+//thank you manu.map on discord
 function createBlock(data) {
+    ///create a block variable///
     var block = {
         index: Blockchain.blocks.length ,
         prevHash: Blockchain.blocks[Blockchain.blocks.length-1]["hash"],
         data: data,
         timestamp: Date.now(),
     };
-
+    // hash the block
     block.hash = blockHash(block);
+    // push the block to the blockchain 
     Blockchain.blocks.push(block);
     return block;
 
@@ -54,13 +57,16 @@ function createBlock(data) {
 //     })
 // }
 
+/////////// create blocks and push them to the blockchain /////////
 for (let line of poem){
     createBlock(line)
 }
 
-// create a hash for the block
+//////// create a hash for the block ///////////
 function blockHash(block) {
 	return crypto.createHash("sha256").update(
+        // for some reason i need to string all the value for them to be hashed so 
+        // that what i did
 		String(block.prevHash ) + 
         String(block.index)+
         String(block.data)+
@@ -68,15 +74,7 @@ function blockHash(block) {
 	).digest("hex");
 }
 
-// check the chain integrtry 
-// not sure how to do this 
-function verifyChain(BC){
-    for (var i = 1 ; i <BC.blocks.length; i++) {
-        if (BC.blocks[i]["prevHash"] === BC.blocks[i-1]["hash"]) {
-            return console.log("True"); 
-        }
-    }
-}
+
 
 
 // need a re-write
@@ -91,6 +89,10 @@ function verifyChain(BC){
 
 ///////////////////block verifying function ///////////
 function verifyBlock(block){
+    //check if block contain data 
+    // check if block index is not Genesis 
+    // check if block prev hash contain valuue
+    // check if block hash is equal to the recomputing of the hash fucntion  
     if (block.data.length > 0  &&
         block.index > 0 &&
         block.prevHash != null && 
@@ -101,6 +103,43 @@ function verifyBlock(block){
         return false
     }
 }
+
+
+//////// check the chain integrtry ////////////
+function verifyChain(BC){
+
+    // first create a condition to check for the gensis blcok
+    if (BC.blocks[0]["hash"] === "000000" ){
+        // loop through all the blocks of the chain and check couple things 
+        for (var i = 1 ; i <BC.blocks.length; i++) {
+            // check if prevhash is the same as privous block hash
+            // and also check if the block pass the criteria specified in verify block
+            if (BC.blocks[i]["prevHash"] === BC.blocks[i-1]["hash"] &&
+            verifyBlock(BC.blocks[i])) {
+                // all good return true
+                return true; 
+            }
+            else{
+            return false;
+            }
+    }}
+    else{
+        // if genesis block is messed up return false
+        return false;
+    }
+    // for (var i = 1 ; i <BC.blocks.length; i++) {
+    //     if (BC.blocks[i]["prevHash"] === BC.blocks[i-1]["hash"] &&
+    //     verifyBlock(BC.blocks[i])) {
+    //         return true; 
+    //     }
+    //     else{
+    //         return false
+    //     }
+
+    // }
+}
+
+
 
 var poemLine = 15 ; 
 var poemLine2 = "inside until it tears I apart"
@@ -132,5 +171,7 @@ console.log(Blockchain.blocks.length);
 // }
 
 console.log(verifyBlock(Blockchain.blocks[0]));
+console.log(verifyChain(Blockchain));
+console.log('Blockchain is valid: ' + verifyChain(Blockchain));
 
 
