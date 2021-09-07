@@ -69,7 +69,7 @@ function blockHash(block) {
 }
 
 // check the chain integrtry 
-// by verifying prevhash == to current hash 
+// not sure how to do this 
 function verifyChain(BC){
     for (var i = 1 ; i <BC.blocks.length; i++) {
         if (BC.blocks[i]["prevHash"] === BC.blocks[i-1]["hash"]) {
@@ -89,7 +89,7 @@ function verifyChain(BC){
 // 	).digest("hex");
 // }
 
-
+///////////////////block verifying function ///////////
 function verifyBlock(block){
     if (block.data.length > 0  &&
         block.index > 0 &&
