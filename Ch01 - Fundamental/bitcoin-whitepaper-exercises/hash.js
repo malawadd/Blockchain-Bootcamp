@@ -91,10 +91,15 @@ function verifyChain(BC){
 
 
 function verifyBlock(block){
-    if (block.data == 0 && block.hash == "000000" ){
+    if (block.data.length > 0  &&
+        block.index > 0 &&
+        block.prevHash != null && 
+        block.hash === blockHash(block) ){
         return true ; 
     }
-    
+    else{
+        return false
+    }
 }
 
 var poemLine = 15 ; 
@@ -126,6 +131,6 @@ console.log(Blockchain.blocks.length);
 
 // }
 
-console.log(Blockchain.blocks[7]["data"].length > 0 );
+console.log(verifyBlock(Blockchain.blocks[0]));
 
 
